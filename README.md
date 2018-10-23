@@ -21,4 +21,8 @@ Build a full-stack production ready note taking app using Serverless and React o
 
 </details>
 
+# Table of contents
+
+* [INTRODUCTION](https://github.com/Develop-X/Build-Full-Stack-Apps-with-Serverless-and-React-on-AWS#introduction)
+** What is Serverless? What is AWS Lambda? Why create Serverless apps? 
 
