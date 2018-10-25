@@ -225,5 +225,21 @@ Lambda comes with a very generous free tier and it is unlikely that you will go 
 The Lambda free tier includes 1M free requests per month and 400,000 GB-seconds of compute time per month. Past this, it costs $0.20 per 1 million requests and $0.00001667 for every GB-seconds. The GB-seconds is based on the memory consumption of the Lambda function. For further details check out the Lambda pricing page (https://aws.amazon.com/lambda/pricing/).
 In our experience, Lambda is usually the least expensive part of our infrastructure costs.
 
-Next, let’s take a deeper look into the advantages of serverless, including the total cost of running our demo app.
+Next, let’s take a deeper look into the advantages of serverless.
+
+## Why Create Serverless Apps?
+
+It is important to address why it is worth learning how to create serverless apps. There are a couple of reasons why serverless apps are favored over traditional server hosted apps.
+
+1. Low maintenance 
+2. Low cost 
+3. Easy to scale
+
+The biggest beneﬁt by far is that you only need to worry about your code and nothing else. And the low maintenance is a result of not having any servers to manage. You don’t need to actively ensure that your server is running properly or that you have the right security updates on it. You deal with your own application code and nothing else.
+The main reason it’s cheaper to run serverless applications is that you are effectively only paying per request. So when your application is not being used, you are not being charged for it. 
+
+# Create an AWS Account
+
+
+
 
