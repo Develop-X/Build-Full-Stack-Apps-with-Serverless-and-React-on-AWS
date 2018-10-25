@@ -191,3 +191,6 @@ The package size refers to all your code necessary to run your function. This in
 
 Finally here is what a Lambda function (a Node.js version) looks like.
 <img src="/images/Lambda.PNG">
+```
+Here myHandler is the name of our Lambda function. The event object contains all the information about the event that triggered this Lambda. In the case of a HTTP request it’ll be information about the speciﬁc HTTP request. The context object contains info about the runtime our Lambda function is executing in. After we do all the work inside our Lambda function, we simply call the callback function with the results (or the error) and AWS will respond to the HTTP request with it. 
+```
