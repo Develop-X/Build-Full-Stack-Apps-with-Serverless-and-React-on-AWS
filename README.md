@@ -190,4 +190,4 @@ The package size refers to all your code necessary to run your function. This in
 ### Lambda Function
 
 Finally here is what a Lambda function (a Node.js version) looks like.
-<img src="../images/Lambda.PNG">
+<img src="../images/master/Lambda.PNG">
