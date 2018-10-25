@@ -194,3 +194,36 @@ Finally here is what a Lambda function (a Node.js version) looks like.
 ```
 Here myHandler is the name of our Lambda function. The event object contains all the information about the event that triggered this Lambda. In the case of a HTTP request it’ll be information about the speciﬁc HTTP request. The context object contains info about the runtime our Lambda function is executing in. After we do all the work inside our Lambda function, we simply call the callback function with the results (or the error) and AWS will respond to the HTTP request with it. 
 ```
+
+### Execution Model
+
+The container (and the resources used by it) that runs our function is managed completely by AWS. It is brought up when an event takes place and is turned off if it is not being used. If additional requests are made while the original event is being served, a new container is brought up to serve a request. This means that if we are undergoing a usage spike, the cloud provider simply creates multiple instances of the container with our function to serve those requests.
+
+This has some interesting implications. Firstly, our functions are effectively stateless. Secondly, each request (or event) is served by a single instance of a Lambda function. This means that you are not going to be handling concurrent requests in your code. AWS brings up a container whenever there is a new request. It does make some optimizations here. It will hang on to the container for a few minutes (5 - 15mins depending on the load) so it can respond to subsequent requests without a cold start. 
+
+### Stateless Functions
+
+The above execution model makes Lambda functions effectively stateless. This means that every time your Lambda function is triggered by an event it is invoked in a completely new environment. You don’t have access to the execution context of the previous event.
+However, due to the optimization noted above, the actual Lambda function is invoked only once per container instantiation. Recall that our functions are run inside containers. So when a function is ﬁrst invoked, all the code in our handler function gets executed and the handler function gets invoked. If the container is still available for subsequent requests, your function will get invoked and not the code around it.
+For example, the createNewDbConnection method below is called once per container instantiation and not every time the Lambda function is invoked. The myHandler function on the other hand is called on every invocation.
+'''
+var dbConnection = createNewDbConnection();
+exports.myHandler = function(event, context, callback) 
+ {  
+	var result = dbConnection.makeQuery();  
+	callback(null, result);
+ };
+'''
+This caching effect of containers also applies to the /tmp directory that we talked about above. It is available as long as the container is being cached.
+Now you can guess that this isn’t a very reliable way to make our Lambda functions stateful. This is because we just don’t control the underlying process by which Lambda is invoked or it’s containers are cached.
+
+### Pricing
+
+Finally, Lambda functions are billed only for the time it takes to execute your function. And it is calculated from the time it begins executing till when it returns or terminates. It is rounded up to the nearest 100ms.
+Note that while AWS might keep the container with your Lambda function around after it has completed; you are not going to be charged for this.
+Lambda comes with a very generous free tier and it is unlikely that you will go over this while working on this guide.
+The Lambda free tier includes 1M free requests per month and 400,000 GB-seconds of compute time per month. Past this, it costs $0.20 per 1 million requests and $0.00001667 for every GB-seconds. The GB-seconds is based on the memory consumption of the Lambda function. For further details check out the Lambda pricing page (https://aws.amazon.com/lambda/pricing/).
+In our experience, Lambda is usually the least expensive part of our infrastructure costs.
+
+Next, let’s take a deeper look into the advantages of serverless, including the total cost of running our demo app.
+
