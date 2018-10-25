@@ -206,14 +206,14 @@ This has some interesting implications. Firstly, our functions are effectively s
 The above execution model makes Lambda functions effectively stateless. This means that every time your Lambda function is triggered by an event it is invoked in a completely new environment. You don’t have access to the execution context of the previous event.
 However, due to the optimization noted above, the actual Lambda function is invoked only once per container instantiation. Recall that our functions are run inside containers. So when a function is ﬁrst invoked, all the code in our handler function gets executed and the handler function gets invoked. If the container is still available for subsequent requests, your function will get invoked and not the code around it.
 For example, the createNewDbConnection method below is called once per container instantiation and not every time the Lambda function is invoked. The myHandler function on the other hand is called on every invocation.
-'''
+```
 var dbConnection = createNewDbConnection();
 exports.myHandler = function(event, context, callback) 
  {  
 	var result = dbConnection.makeQuery();  
 	callback(null, result);
  };
-'''
+```
 This caching effect of containers also applies to the /tmp directory that we talked about above. It is available as long as the container is being cached.
 Now you can guess that this isn’t a very reliable way to make our Lambda functions stateful. This is because we just don’t control the underlying process by which Lambda is invoked or it’s containers are cached.
 
