@@ -240,6 +240,17 @@ The main reason it’s cheaper to run serverless applications is that you are ef
 
 # Create an AWS Account
 
+Let’s ﬁrst get started by creating an AWS (Amazon Web Services) account. Of course you can skip this if you already have one. Head over to the AWS homepage (https://aws.amazon.com) and hit the Create a Free Account and follow the steps to create your account.
 
 
+## Create an IAM User
+
+Amazon IAM (Identity and Access Management) enables you to manage users and user permissions in AWS. You can create one or more IAM users in your AWS account. You might create an IAM user for someone who needs access to your AWS console, or when you have a new application that needs to make API calls to AWS. This is to add an extra layer of security to your AWS account.
+In this chapter, we are going to create a new IAM user for a couple of the AWS related tools we are going to be using later. 
+
+### Create User
+
+* First, log in to your AWS Console (https://console.aws.amazon.com) and select IAM from the list of services.
+* Select Users.
+* Select Add User.
 
