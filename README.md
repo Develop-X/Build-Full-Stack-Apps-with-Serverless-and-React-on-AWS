@@ -253,4 +253,73 @@ In this chapter, we are going to create a new IAM user for a couple of the AWS r
 * First, log in to your AWS Console (https://console.aws.amazon.com) and select IAM from the list of services.
 * Select Users.
 * Select Add User.
+* Enter a User name and check Programmatic access, then select Next: Permissions.
+* This account will be used by our AWS CLI (https://aws.amazon.com/cli/) and Serverless Framework (https://serverless.com). They’ll be connecting to the AWS API directly and will not be using the Management Console.
+* Select Attach existing policies directly.
+* Search for AdministratorAccess and select the policy, then select Next: Review.
+We can provide a more ﬁne-grained policy here and we cover this later in the Customize the Serverless IAM Policy (/chapters/customize-the-serverless-iam-policy.html) chapter. But for now, let’s continue with this.
+* Select Create user.
+* Select Show to reveal Secret access key.
+* Take a note of the Access key ID and Secret access key. We will be needing this later.
+The concept of IAM pops up very frequently when working with AWS services. So it is worth taking a better look at what IAM is and how it can help us secure our serverless setup
+
+## What is IAM
+
+In the last chapter, we created an IAM user so that our AWS CLI can operate on our account without using the AWS Console. But the IAM concept is used very frequently when dealing with security for AWS services, so it is worth understanding it in a bit more detail. Unfortunately, IAM is made up of a lot of different parts and it can be very confusing for folks that ﬁrst come across it. In this chapter we are going to take a look at IAM and it’s concepts in a bit more detail.
+Let’s start with the ofﬁcial deﬁnition of IAM.
+```
+AWS Identity and Access Management (IAM) is a web service that helps you securely control access to AWS resources for your users. You use IAM to control who can use your AWS resources (authentication) and what resources they can use and in what ways (authorization).
+```
+The ﬁrst thing to notice here is that IAM is a service just like all the other services that AWS has. But in some ways it helps bring them all together in a secure way. IAM is made up of a few different parts, so let’s start by looking at the ﬁrst and most basic one. 
+
+### What is an IAM User
+
+When you ﬁrst create an AWS account, you are the root user. The email address and password you used to create the account is called your root account credentials. You can use them to sign in to the AWS Management Console. When you do, you have complete, unrestricted access to all resources in your AWS account, including access to your billing information and the ability to change your password.
+
+Though it is not a good practice to regularly access your account with this level of access, it is not a problem when you are the only person who works in your account. However, when another person needs to access and manage your AWS account, you deﬁnitely don’t want to give out your root credentials. Instead you create an IAM user.
+An IAM user consists of a name, a password to sign into the AWS Management Console, and up to two access keys that can be used with the API or CLI.
+
+By default, users can’t access anything in your account. You grant permissions to a user by creating a policy and attaching the policy to the user. You can grant one or more of these policies to restrict what the user can and cannot access. 
+
+### What is an IAM Policy?
+
+An IAM policy is a rule or set of rules deﬁning the operations allowed/denied to be performed on an AWS resource.
+Policies can be granted in a number of ways:
+
+* Attaching a managed policy . AWS provides a list of pre-deﬁned policies such as AmazonS3ReadOnlyAccess . 
+* Attaching an inline policy . An inline policy is a custom policy created by hand. 
+* Adding the user to a group that has appropriate permission policies attached. We’ll look at groups in detail below. 
+* Cloning the permission of an existing IAM user.
+
+As an example, here is a policy that grants all operations to all S3 buckets.
+```
+{  
+	"Version": "2012-10-17",
+	"Statement": 
+		{    
+			"Effect": "Allow",
+			"Action": "s3:*",
+			"Resource": "*"  
+		} 
+}
+```
+
+And here is a policy that grants more granular access, only allowing retrieval of ﬁles preﬁxed by the string Bobs- in the bucket called Hello-bucket .
+```
+{  
+	"Version": "2012-10-17",
+	"Statement": 
+		{    
+			"Effect": "Allow",
+			"Action": ["s3:GetObject"],
+			"Resource": "arn:aws:s3:::Hello-bucket/*",
+			"Condition": 
+			{
+				"StringEquals": {"s3:prefix": "Bobs-"
+			}
+	} 	
+}
+
+We are using S3 resources in the above examples. But a policy looks similar for any of the AWS services. It just depends on the resource ARN for Resource property. An ARN is an identiﬁer for a resource in AWS and we’ll look at it in more detail in the next chapter. We also add the corresponding service actions and condition context keys in Action and Condition property. You can ﬁnd all the available AWS Service actions and condition context keys for use in IAM Policies here (https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_actionsconditions.ht ml). Aside from attaching a policy to a user, you can attach them to a role or a group. 
+
 
